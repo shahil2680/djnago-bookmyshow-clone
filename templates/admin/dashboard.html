@@ -1,0 +1,106 @@
+{% extends 'users/basic.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white font-weight-bold" style="font-family: 'Outfit';">
+            <i class="fas fa-chart-line text-warning mr-2"></i> Admin Analytics Dashboard
+        </h2>
+        <span class="badge badge-success p-2"><i class="fas fa-database mr-1"></i> Cached Data (5 min)</span>
+    </div>
+
+    <!-- Top Stats Row -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="glass-panel p-4 h-100" style="border-left: 4px solid #e50914;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase font-weight-bold mb-1" style="font-size:0.75rem;">Total Revenue</h6>
+                        <h3 class="text-white font-weight-bold m-0">₹{{ data.revenue|floatformat:2 }}</h3>
+                    </div>
+                    <div class="p-3 rounded-circle" style="background: rgba(229, 9, 20, 0.1);">
+                        <i class="fas fa-rupee-sign fa-2x text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="glass-panel p-4 h-100" style="border-left: 4px solid #28a745;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase font-weight-bold mb-1" style="font-size:0.75rem;">Total Bookings</h6>
+                        <h3 class="text-white font-weight-bold m-0">{{ data.total_bookings }}</h3>
+                    </div>
+                    <div class="p-3 rounded-circle" style="background: rgba(40, 167, 69, 0.1);">
+                        <i class="fas fa-ticket-alt fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-panel p-4 h-100" style="border-left: 4px solid #ffc107;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase font-weight-bold mb-1" style="font-size:0.75rem;">Failed Payments</h6>
+                        <h3 class="text-white font-weight-bold m-0">{{ data.failed_payments }}</h3>
+                    </div>
+                    <div class="p-3 rounded-circle" style="background: rgba(255, 193, 7, 0.1);">
+                        <i class="fas fa-times-circle fa-2x text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <!-- Daily Booking Trends -->
+        <div class="col-md-7 mb-4 mb-md-0">
+            <div class="glass-panel p-4 h-100">
+                <h5 class="text-white font-weight-bold mb-4">
+                    <i class="fas fa-chart-bar text-warning mr-2"></i> Daily Booking Trends
+                </h5>
+                {% if data.daily_trends %}
+                <div style="display: flex; align-items: flex-end; gap: 10px; height: 150px;">
+                    {% for trend in data.daily_trends %}
+                    {% with max_count=data.daily_trends.0.count %}
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <span class="text-muted" style="font-size: 0.7rem;">{{ trend.count }}</span>
+                        <div style="width: 100%; background: linear-gradient(to top, #e50914, #ff6b6b); border-radius: 4px 4px 0 0; height: {{ trend.count|default:1 }}px; min-height: 5px; max-height: 120px;"></div>
+                        <span class="text-muted" style="font-size: 0.65rem;">{{ trend.date|date:"M d" }}</span>
+                    </div>
+                    {% endwith %}
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-chart-bar fa-3x mb-3"></i>
+                    <p>No booking data yet. Complete some bookings to see the trend chart!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Most Popular Movies -->
+        <div class="col-md-5">
+            <div class="glass-panel p-4 h-100">
+                <h5 class="text-white font-weight-bold mb-4">
+                    <i class="fas fa-fire text-danger mr-2"></i> Top Movies
+                </h5>
+                {% for pop_movie in data.popular_movies %}
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2" style="border-bottom: 1px solid rgba(255,255,255,0.07);">
+                    <div class="d-flex align-items-center">
+                        <span class="mr-3 text-muted font-weight-bold" style="width:20px;">#{{ forloop.counter }}</span>
+                        <div>
+                            <div class="text-white" style="font-size: 0.9rem;">{{ pop_movie.name|truncatechars:22 }}</div>
+                            <small class="text-muted"><i class="fas fa-star text-warning mr-1"></i>{{ pop_movie.rating }}</small>
+                        </div>
+                    </div>
+                    <span class="badge badge-success px-2 py-1">{{ pop_movie.booking_count }} booked</span>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center py-4">No bookings yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

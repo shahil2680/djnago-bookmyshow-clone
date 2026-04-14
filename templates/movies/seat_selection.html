@@ -42,7 +42,8 @@
             {% csrf_token %}
             <div class="d-flex justify-content-center flex-wrap mb-4">
               {% for seat in seats %}
-              <div class="seat {% if seat.is_booked %}sold{% endif %}">
+              <div class="seat {% if seat.is_booked %}sold{% endif %}" 
+                   {% if not seat.is_booked %}onclick="toggleSeat(this, 'seat-{{ seat.id }}')"{% endif %}>
                 {% if not seat.is_booked %}
                 <input
                   type="checkbox"
@@ -54,6 +55,7 @@
                 <label
                   for="seat-{{ seat.id }}"
                   class="w-100 h-100 d-flex align-items-center justify-content-center"
+                  style="pointer-events: none; cursor: pointer;"
                   >{{ seat.seat_number }}</label
                 >
                 {% else %} {{ seat.seat_number }} {% endif %}
@@ -166,5 +168,17 @@
       </ul>
       <button type="submit">Book selected seats</button>
 </form> -->
+
+
+<script>
+  function toggleSeat(seatDiv, checkboxId) {
+    const checkbox = document.getElementById(checkboxId);
+    if (!checkbox) return;
+    
+    // Toggle selected class and checkbox state
+    checkbox.checked = !checkbox.checked;
+    seatDiv.classList.toggle('selected', checkbox.checked);
+  }
+</script>
 
 {% endblock %}

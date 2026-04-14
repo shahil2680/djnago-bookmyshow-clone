@@ -1,188 +1,81 @@
 {% extends "users/basic.html" %} 
 {% block content %}
-<style>
-    /* Styling */
-    body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-  margin: 0;
-  padding: 0;
-}
 
-.container {
-  padding: 20px;
-  max-width: 900px;
-  margin: 0 auto;
-}
+<div class="container py-5">
+  <!-- Movie Header Area (Task 3: Trailer Embedding) -->
+  <div class="glass-panel p-0 mb-5 overflow-hidden" style="position: relative; border-radius: 15px;">
+    {% if movie.trailer_url %}
+        <div class="embed-responsive embed-responsive-21by9 w-100" style="max-height: 400px; background-color: #000;">
+            <iframe 
+                class="embed-responsive-item" 
+                src="{{ movie.trailer_url }}?autoplay=0&rel=0&modestbranding=1" 
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-presentation"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="p-4" style="background: linear-gradient(to right, rgba(10,10,15,0.9), rgba(10,10,15,0.6));">
+    {% else %}
+        <div class="p-4 d-flex align-items-center" style="background: linear-gradient(to right, rgba(10,10,15,0.9), rgba(10,10,15,0.6)); min-height: 200px;">
+            {% if movie.image %}
+            <img src="{{ movie.image.url }}" alt="{{ movie.name }}" style="position: absolute; right: 0; top: 0; opacity: 0.2; height: 100%; object-fit: cover; filter: blur(5px);">
+            {% endif %}
+    {% endif %}
+    
+    <div style="position: relative; z-index: 2;">
+      <h1 class="display-4 font-weight-bold text-white mb-2" style="font-family: 'Outfit';">{{ movie.name }}</h1>
+      <div class="d-flex align-items-center mb-3">
+        {% if movie.rating %}
+        <span class="badge badge-success px-3 py-2 mr-3" style="font-size: 1rem;"><i class="fas fa-star text-warning mr-1"></i> {{ movie.rating }}</span>
+        {% endif %}
+        <span class="badge badge-outline-light border border-secondary px-3 py-2 text-muted.">UA / Action</span>
+      </div>
+      <p class="lead text-light mb-0" style="max-width: 800px;">{{ movie.description }}</p>
+    </div>
+  </div>
+  </div>
 
-.movie-title {
-  font-size: 28px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 20px;
-}
+  <h3 class="text-white font-weight-bold mb-4" style="font-family: 'Outfit';">Available Theaters</h3>
 
-/* Theatre Info Styling */
-.theatre-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
-  flex-wrap: wrap; /* Responsive wrapping */
-}
-
-.theatre-info strong {
-  font-size: 18px;
-  flex: 1;
-}
-
-/* Info Icons Styling */
-.info-icons {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px; /* Space between icons */
-  margin-top: 10px;
-  flex: 2;
-}
-
-.info-icons i {
-  margin-right: 5px;
-  font-size: 18px;
-}
-
-.info-section {
-  flex: 1;
-  text-align: right;
-}
-
-/* Show Times Styling */
-.show-times {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  flex-wrap: wrap; /* Responsive wrapping */
-}
-
-.time-box {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px 20px;
-  text-align: center;
-  background-color: #f1f1f1;
-  margin-bottom: 10px;
-  flex: 1;
-  min-width: 100px;
-  transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.time-box:hover {
-  transform: scale(1.05);
-  background-color: #28a745;
-  color: white;
-}
-
-.time-box span {
-  display: block;
-  font-size: 12px;
-  color: black;
-}
-.time-box span:hover {
-  color: white;
-}
-
-/* Non-Cancellable Styling */
-.non-cancellable {
-  color: #ffc107;
-  font-size: 12px;
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.non-cancellable i {
-  margin-right: 5px;
-}
-
-/* Responsive Styling */
-@media (max-width: 768px) {
-  .theatre-info {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .info-section {
-    text-align: left;
-    margin-top: 10px;
-  }
-
-  .show-times {
-    justify-content: space-between;
-  }
-
-  .time-box {
-    flex: 1 1 100%;
-    margin-bottom: 10px;
-  }
-}
-  </style>
-  
-  <body>
-    <div class="container">
-      <!-- Movie Title -->
-      <div class="movie-title">Movie - {{ movie.name }}</div>
-  
-      <!-- Conditional Check for Theaters -->
-      {% if theaters %}
-        <!-- Theater List and Showtimes -->
-        {% for theater in theaters %}
-        <div class="theatre-info">
-          <div>
-            <strong>{{ theater.name }} Theater</strong>
-            <div class="info-icons mt-2">
-              <i class="fas fa-mobile-alt text-success"></i> M-Ticket
-              <i class="fas fa-utensils text-warning ms-3"></i> Food & Beverage
-              <i class="fas fa-parking text-primary ms-3"></i> Parking Available
-              <i class="fas fa-wheelchair text-info ms-3"></i> Wheelchair Access
-              <i class="fas fa-glasses text-danger ms-3"></i> 3D Show Available
-            </div>
+  <!-- Conditional Check for Theaters -->
+  {% if theaters %}
+    {% for theater in theaters %}
+    <div class="glass-panel p-4 mb-4">
+      <div class="row align-items-center">
+        <!-- Theater Info -->
+        <div class="col-md-7 mb-3 mb-md-0">
+          <h4 class="text-white font-weight-bold mb-2">{{ theater.name }}</h4>
+          <div class="d-flex flex-wrap gap-2 text-muted" style="font-size: 0.85rem;">
+            <span class="mr-3 mb-2"><i class="fas fa-mobile-alt text-success mr-1"></i> M-Ticket</span>
+            <span class="mr-3 mb-2"><i class="fas fa-hamburger text-warning mr-1"></i> F&B</span>
+            <span class="mr-3 mb-2"><i class="fas fa-parking text-primary mr-1"></i> Parking</span>
+            <span class="mr-3 mb-2"><i class="fas fa-wheelchair text-info mr-1"></i> Wheelchair</span>
+            <span class="mr-3 mb-2"><i class="fas fa-glasses text-danger mr-1"></i> 3D</span>
+          </div>
+          <div class="mt-2" style="font-size: 0.8rem;">
+            <i class="fas fa-exclamation-circle text-warning mr-1"></i> <span class="text-muted">Non-cancellable</span>
           </div>
         </div>
-  
-        <div class="show-times">
-          <div class="time-box">
-            {{ theater.time }}
-            <a href="{% url 'book_seats' theater.id %}">
-              <span>Book Now</span>
-            </a>
-          </div>
+        
+        <!-- Showtimes -->
+        <div class="col-md-5 d-flex justify-content-md-end align-items-center flex-wrap">
+          <a href="{% url 'book_seats' theater.id %}" class="btn btn-outline-light cinematic-btn-outline mr-2 mb-2" style="border-radius: 8px; border-color: rgba(255,255,255,0.2);">
+            <div class="text-success font-weight-bold mb-1" style="font-size: 1.1rem;">{{ theater.time|date:"g:i A" }}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">{{ theater.time|date:"M d" }}</div>
+          </a>
         </div>
-        {% endfor %}
-      {% else %}
-        <!-- Message when no theaters are available -->
-        <div class="no-theaters mt-4">
-          <p>Sorry, no theaters are available for this movie at the moment.</p>
-        </div>
-      {% endif %}
-  
-      <div class="non-cancellable mt-4">
-        <i class="fas fa-circle text-warning"></i> Non-cancellable
       </div>
     </div>
-  </body>
-<!-- <h1>Theater for {{movie.name}}</h1>
-<ul>
-  {% for theater in theaters %}
-  <li>
-    <strong>{{theater.name}}</strong>{{theater.time}}
-    <a href="{% url 'book_seats' theater.id %}">View Seats</a>
-  </li>
-  {% endfor %}
-</ul> -->
+    {% endfor %}
+  {% else %}
+    <!-- Message when no theaters are available -->
+    <div class="glass-panel text-center py-5">
+      <i class="fas fa-building fa-3x text-muted mb-3"></i>
+      <h5 class="text-white">No Theaters Found</h5>
+      <p class="text-muted">Sorry, no theaters are currently hosting this movie. Check back later!</p>
+    </div>
+  {% endif %}
+</div>
+
 {% endblock %}

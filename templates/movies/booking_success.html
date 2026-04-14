@@ -1,0 +1,50 @@
+{% extends 'users/basic.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="glass-panel p-5">
+                <!-- Animated Success Icon -->
+                <div style="width: 90px; height: 90px; background: linear-gradient(135deg, #28a745, #20c997); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px auto; box-shadow: 0 0 40px rgba(40,167,69,0.4);">
+                    <i class="fas fa-check fa-2x text-white"></i>
+                </div>
+
+                <h2 class="text-white font-weight-bold mb-2" style="font-family: 'Outfit';">Booking Confirmed!</h2>
+                <p class="text-muted mb-4">Your seats have been successfully booked and locked. A confirmation email has been dispatched to your inbox.</p>
+
+                <!-- Booking Summary -->
+                <div class="card mb-4 text-left" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Movie</span>
+                            <span class="text-white font-weight-bold">{{ booking.movie.name }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Theater</span>
+                            <span class="text-white">{{ booking.theater.name }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Showtime</span>
+                            <span class="text-white">{{ booking.theater.time|date:"M d, Y — g:i A" }}</span>
+                        </div>
+                        <hr style="border-color: rgba(255,255,255,0.1);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Amount Paid</span>
+                            <span class="text-success font-weight-bold" style="font-size: 1.1rem;">₹{{ payment.amount }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'profile' %}" class="btn btn-success cinematic-btn px-4 mr-2">
+                        <i class="fas fa-ticket-alt mr-2"></i> View My Tickets
+                    </a>
+                    <a href="{% url 'movie_list' %}" class="btn btn-outline-light cinematic-btn-outline px-4">
+                        <i class="fas fa-film mr-2"></i> Browse More Movies
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

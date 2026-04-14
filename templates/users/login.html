@@ -1,90 +1,91 @@
 {% extends "users/basic.html" %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="modal-title mb-0" id="loginModalLabel">
-                        <i class="fas fa-sign-in-alt me-2"></i> Log In
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="{% url 'login' %}">
-                        {% csrf_token %}
-                        <!-- Username Input -->
-                        <div class="mb-3">
-                            <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                                {{ form.username }}
-                            </div>
-                        </div>
+<div class="auth-wrapper">
+    <div class="glass-panel auth-card">
+        <div class="text-center mb-4">
+            <h3 class="font-weight-bold" style="font-family: 'Outfit'; color: #fff;">
+                <i class="fas fa-sign-in-alt text-danger me-2"></i> Welcome Back
+            </h3>
+            <p class="text-muted">Sign in to book your premium seats.</p>
+        </div>
+        
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="alert alert-danger" style="background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.3); color: #ff4d4f; border-radius: 8px;">
+                Invalid username or password. Please try again.
+            </div>
+            {% endif %}
 
-                        <!-- Password Input -->
-                        <div class="mb-3">
-                            <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-lock"></i>
-                                </span>
-                                {{ form.password }}
-                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                    <i class="fas fa-eye" id="toggleIcon"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-sign-in-alt me-2"></i> Login
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{% url 'password_reset' %}" class="text-decoration-none">Forgot Password?</a>
-                    <hr>
-                    <p class="mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none">Sign Up</a></p>
+            <!-- Username Input -->
+            <div class="form-group mb-4">
+                <label for="{{ form.username.id_for_label }}" class="text-light font-weight-bold">Username</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-right: none; color: var(--text-muted);">
+                            <i class="fas fa-user"></i>
+                        </span>
+                    </div>
+                    {{ form.username }}
                 </div>
             </div>
+
+            <!-- Password Input -->
+            <div class="form-group mb-4">
+                <label for="{{ form.password.id_for_label }}" class="text-light font-weight-bold">Password</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-right: none; color: var(--text-muted);">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </div>
+                    {{ form.password }}
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword" style="border-color: var(--glass-border); color: var(--text-muted);">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary cinematic-btn btn-block mt-2 py-2" style="font-size: 1.1rem;">
+                Login to Continue <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'password_reset' %}" class="text-muted text-decoration-none hover-primary" style="font-size: 0.9rem;">Forgot Password?</a>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+            <p class="mb-0 text-light" style="font-size: 0.95rem;">New to BookMySeat? <a href="{% url 'register' %}" class="text-danger font-weight-bold text-decoration-none">Create an Account</a></p>
         </div>
     </div>
 </div>
 
-<style>
-    .card {
-        border-radius: 1rem;
-    }
-    .card-header {
-        border-top-left-radius: 1rem;
-        border-top-right-radius: 1rem;
-    }
-    .input-group-text {
-        background-color: #f8f9fa;
-    }
-    .form-control:focus {
-        box-shadow: none;
-        border-color: #80bdff;
-    }
-</style>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Add custom glass classes to Django form inputs
+        const inputs = document.querySelectorAll('.auth-card input:not([type="hidden"]):not([type="submit"])');
+        inputs.forEach(input => {
+            input.classList.add('form-control', 'glass-input');
+            input.style.borderLeft = 'none';
+        });
+
+        // Toggle Password Visibility
         const togglePassword = document.getElementById('togglePassword');
         const passwordField = document.getElementById('{{ form.password.id_for_label }}');
         const toggleIcon = document.getElementById('toggleIcon');
 
-        togglePassword.addEventListener('click', function() {
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            toggleIcon.classList.toggle('fa-eye');
-            toggleIcon.classList.toggle('fa-eye-slash');
-        });
+        if(togglePassword && passwordField) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                toggleIcon.classList.toggle('fa-eye');
+                toggleIcon.classList.toggle('fa-eye-slash');
+            });
+        }
     });
 </script>
 
